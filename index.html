@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MatchOptimizer - Find Your Perfect Match</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .screen {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .active {
+            display: block;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            background: transparent;
+            box-shadow: none;
+            color: white;
+        }
+
+        .logo {
+            font-size: 42px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6bcd, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .tagline {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #ff6bcd;
+            color: white;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #e6e6ff;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .half {
+            flex: 1;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 10px 0;
+            border: 1px solid #e6e6ff;
+        }
+
+        .profile-name {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .verified {
+            color: #ff6bcd;
+            font-weight: bold;
+        }
+
+        .subscription-alert {
+            background: #ff6bcd;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .message-bubble {
+            background: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 20px;
+            margin: 5px 0;
+            max-width: 80%;
+        }
+
+        .message-them {
+            background: #667eea;
+            color: white;
+            align-self: flex-start;
+        }
+
+        .message-you {
+            background: #ff6bcd;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #e6e6ff;
+            border-radius: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div class="screen active welcome-screen" id="welcomeScreen">
+            <div class="logo">MatchOptimizer</div>
+            <div class="tagline">Find Your Perfect Match Today</div>
+            <p style="margin-bottom: 40px; line-height: 1.6; opacity: 0.8;">
+                Join thousands of singles finding love through our intelligent matching system
+            </p>
+            <button class="btn btn-primary" onclick="showScreen('signupScreen')">Create Account</button>
+            <button class="btn btn-secondary" onclick="showScreen('loginScreen')">Login</button>
+        </div>
+
+        <!-- Signup Screen -->
+        <div class="screen" id="signupScreen">
+            <h2 style="color: #667eea; text-align: center; margin-bottom: 30px;">Create Your Account</h2>
+            
+            <input class="input" type="text" placeholder="Full Name">
+            <input class="input" type="email" placeholder="Email">
+            <input class="input" type="password" placeholder="Password">
+            <input class="input" type="number" placeholder="Age">
+            
+            <h3 style="color: #667eea; margin: 20px 0 10px;">Payment Method</h3>
+            <p style="color: #666; margin-bottom: 15px; font-size: 14px;">Required for identity verification</p>
+            
+            <input class="input" type="text" placeholder="Card Number" maxlength="16" id="cardNumber">
+            
+            <div class="row">
+                <input class="input half" type="text" placeholder="MM/YY" id="expiry">
+                <input class="input half" type="text" placeholder="CVV" maxlength="3" id="cvv">
+            </div>
+            
+            <input class="input" type="text" placeholder="Cardholder Name" id="cardName">
+            
+            <button class="btn btn-primary" onclick="startSubscription()">Start Free Trial</button>
+            
+            <p style="font-size: 12px; color: #999; text-align: center; margin-top: 20px; line-height: 1.4;">
+                By continuing, you agree to our Terms. Free trial for 1 day, then $4/month. Cancel anytime.
+            </p>
+        </div>
+
+        <!-- Login Screen -->
+        <div class="screen" id="loginScreen">
+            <h2 style="color: #667eea; text-align: center; margin-bottom: 40px;">Welcome Back</h2>
+            <input class="input" type="email" placeholder="Email">
+            <input class="input" type="password" placeholder="Password">
+            <button class="btn btn-primary">Login</button>
+            <button class="btn btn-secondary" onclick="showScreen('welcomeScreen')" style="margin-top: 10px;">← Back</button>
+        </div>
+
+        <!-- Main App Screen -->
+        <div class="screen" id="mainScreen">
+            <div style="background: white; padding: 20px; border-radius: 15px; margin-bottom: 20px;">
+                <h2 style="color: #667eea; margin: 0;">Matches Near You</h2>
+                <p style="color: #ff6bcd; margin: 5px 0 0; font-weight: bold;">Premium • $4/month</p>
+            </div>
+
+            <div class="subscription-alert" id="subscriptionAlert">
+                <!-- Subscription alerts will appear here -->
+            </div>
+
+            <div id="profilesContainer">
+                <!-- Profiles will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Chat Screen -->
+        <div class="screen" id="chatScreen">
+            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                <button class="btn btn-secondary" onclick="showScreen('mainScreen')" style="width: auto; padding: 10px; margin-right: 10px;">←</button>
+                <h2 style="color: #667eea; margin: 0;" id="chatUserName">Chat</h2>
+            </div>
+            
+            <div class="chat-container" id="chatContainer">
+                <!-- Messages will appear here -->
+            </div>
+            
+            <div class="row">
+                <input class="input" type="text" placeholder="Type a message..." id="messageInput" style="flex: 1;">
+                <button class="btn btn-primary" onclick="sendMessage()" style="width: auto; padding: 15px;">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Extensive fake user profiles
+        const fakeProfiles = [
+            { id: 1, name: "Emma", age: 24, distance: "2 miles", bio: "Adventure seeker 🌍 Coffee lover ☕", verified: true, photos: 5, responses: ["Hey there! 😊", "I love trying new coffee shops!", "What's your favorite adventure?"] },
+            { id: 2, name: "Sophia", age: 26, distance: "3 miles", bio: "Artist 🎨 Dog mom 🐶 Yoga enthusiast", verified: true, photos: 7, responses: ["Hi! 🎨", "My dog says woof! 🐶", "Do you practice yoga too?"] },
+            { id: 3, name: "Isabella", age: 25, distance: "1 mile", bio: "Foodie 🍣 Traveler ✈️ Bookworm", verified: false, photos: 4, responses: ["Hello! ✈️", "Just got back from Japan! 🍣", "Reading anything good lately?"] },
+            { id: 4, name: "Mia", age: 27, distance: "4 miles", bio: "Fitness coach 💪 Sunset chaser 🌅", verified: true, photos: 6, responses: ["Hey! 💪", "Ready for a workout?", "Sunsets are my therapy 🌅"] },
+            { id: 5, name: "Charlotte", age: 23, distance: "2 miles", bio: "Music lover 🎵 Beach goer 🏖️", verified: true, photos: 8, responses: ["Hi! 🎵", "What's your favorite band?", "Beach day soon? 🏖️"] },
+            { id: 6, name: "Amelia", age: 28, distance: "3 miles", bio: "Chef in training 👩‍🍳 Wine enthusiast 🍷", verified: false, photos: 5, responses: ["Hello! 👩‍🍳", "Cooking anything delicious?", "Red or white? 🍷"] },
+            { id: 7, name: "Harper", age: 26, distance: "1 mile", bio: "Digital nomad 💻 Mountain hiker ⛰️", verified: true, photos: 7, responses: ["Hey! 💻", "Working from anywhere today!", "Hiked any good trails lately? ⛰️"] },
+            { id: 8, name: "Evelyn", age: 24, distance: "2 miles", bio: "Plant mom 🌱 Yoga teacher 🧘‍♀️", verified: true, photos: 6, responses: ["Hi! 🌱", "My plants say hello!", "Need some yoga tips? 🧘‍♀️"] },
+            { id: 9, name: "Abigail", age: 27, distance: "3 miles", bio: "Photographer 📸 Tea collector 🍵", verified: false, photos: 9, responses: ["Hello! 📸", "Golden hour is my favorite!", "What's your tea preference? 🍵"] },
+            { id: 10, name: "Ella", age: 25, distance: "1 mile", bio: "Dancer 💃 Sunset lover 🌇", verified: true, photos: 5, responses: ["Hey! 💃", "Music makes me move!", "Catch the sunset today? 🌇"] },
+            { id: 11, name: "Avery", age: 26, distance: "2 miles", bio: "Bookstore owner 📚 Coffee addict ☕", verified: true, photos: 4, responses: ["Hi! 📚", "Recommend any good books?", "Coffee date? ☕"] },
+            { id: 12, name: "Scarlett", age: 24, distance: "3 miles", bio: "Fashion designer 👗 Travel blogger 🌎", verified: false, photos: 8, responses: ["Hello! 👗", "What's your style?", "Next travel destination? 🌎"] },
+            { id: 13, name: "Grace", age: 27, distance: "1 mile", bio: "Marathon runner 🏃‍♀️ Dog lover 🐕", verified: true, photos: 6, responses: ["Hey! 🏃‍♀️", "Training for anything?", "Dogs are the best! 🐕"] },
+            { id: 14, name: "Chloe", age: 25, distance: "2 miles", bio: "Scientist 🔬 Star gazer 🌟", verified: false, photos: 5, responses: ["Hi! 🔬", "Science is amazing!", "Clear skies tonight? 🌟"] },
+            { id: 15, name: "Victoria", age: 28, distance: "3 miles", bio: "Musician 🎻 Food explorer 🍜", verified: true, photos: 7, responses: ["Hello! 🎻", "What instrument do you play?", "Tried any new foods? 🍜"] }
+        ];
+
+        // Subscription tiers (updated: $4 starting, $10 maximum)
+        const subscriptionTiers = [
+            { price: 4, duration: 'first month' },
+            { price: 6, duration: 'second month' },
+            { price: 8, duration: 'third month' },
+            { price: 10, duration: 'ongoing' }
+        ];
+
+        let currentTier = 0;
+        let subscriptionActive = false;
+        let currentChatUser = null;
+        let messageCount = 0;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function startSubscription() {
+            const cardNumber = document.getElementById('cardNumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+            const cardName = document.getElementById('cardName').value;
+
+            if (cardNumber.length < 16 || expiry.length < 5 || cvv.length < 3 || !cardName) {
+                alert('Please fill all card details correctly');
+                return;
+            }
+
+            subscriptionActive = true;
+            showScreen('mainScreen');
+            loadProfiles();
+            
+            // Show welcome alert
+            showAlert('Welcome to MatchOptimizer Premium! Your 1-day free trial has started.', 'success');
+            
+            // Start subscription charges
+            setTimeout(() => chargeSubscription(0), 10000); // $4 after 10 seconds
+            setTimeout(() => chargeSubscription(1), 30000); // $6 after 30 seconds
+            setTimeout(() => chargeSubscription(2), 60000); // $8 after 60 seconds
+            setTimeout(() => chargeSubscription(3), 90000); // $10 after 90 seconds
+        }
+
+        function chargeSubscription(tierIndex) {
+            if (!subscriptionActive) return;
+            
+            const tier = subscriptionTiers[tierIndex];
+            currentTier = tierIndex;
+            
+            showAlert(`Your subscription has been renewed: $${tier.price} for ${tier.duration}`, 'charge');
+            
+            // Update subscription display
+            const subStatus = document.querySelector('#mainScreen p');
+            if (subStatus) {
+                subStatus.textContent = `Premium • $${tier.price}/month`;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('subscriptionAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        function loadProfiles() {
+            const container = document.getElementById('profilesContainer');
+            container.innerHTML = '';
+            
+            // Shuffle profiles for variety
+            const shuffledProfiles = [...fakeProfiles].sort(() => Math.random() - 0.5);
+            
+            shuffledProfiles.forEach(profile => {
+                const profileHtml = `
+                    <div class="profile-card">
+                        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+                            <span class="profile-name">${profile.name}, ${profile.age}</span>
+                            ${profile.verified ? '<span class="verified" style="margin-left: 8px;">✓</span>' : ''}
+                        </div>
+                        <p style="color: #666; font-size: 14px; margin-bottom: 10px;">${profile.distance} away</p>
+                        <p style="margin-bottom: 10px; line-height: 1.4;">${profile.bio}</p>
+                        <p style="color: #999; font-size: 14px; margin-bottom: 15px;">${profile.photos} photos</p>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" style="flex: 1; padding: 12px;" onclick="passProfile(${profile.id})">✕ Pass</button>
+                            <button class="btn btn-primary" style="flex: 1; padding: 12px;" onclick="likeProfile(${profile.id})">❤️ Like</button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += profileHtml;
+            });
+        }
+
+        function likeProfile(profileId) {
+            const profile = fakeProfiles.find(p => p.id === profileId);
+            if (profile) {
+                currentChatUser = profile;
+                document.getElementById('chatUserName').textContent = `${profile.name}, ${profile.age}`;
+                showScreen('chatScreen');
+                startChat(profile);
+                showAlert(`You matched with ${profile.name}! Start chatting!`, 'success');
+            }
+        }
+
+        function passProfile(profileId) {
+            // Remove the profile card
+            const profiles = document.querySelectorAll('.profile-card');
+            if (profiles.length > 0) {
+                profiles[0].remove();
+            }
+            
+            // Show new profile if available
+            if (document.querySelectorAll('.profile-card').length === 0) {
+                loadProfiles();
+            }
+        }
+
+        function startChat(profile) {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = '';
+            messageCount = 0;
+            
+            // Add welcome message from the profile
+            addMessage(profile, "Hi there! Thanks for the like! 😊");
+        }
+
+        function addMessage(profile, message, isUser = false) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message-bubble ${isUser ? 'message-you' : 'message-them'}`;
+            messageDiv.textContent = message;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (message && currentChatUser) {
+                addMessage(currentChatUser, message, true);
+                input.value = '';
+                messageCount++;
+                
+                // Auto-reply after 2-4 seconds
+                setTimeout(() => {
+                    if (currentChatUser && currentChatUser.responses) {
+                        const responseIndex = messageCount % currentChatUser.responses.length;
+                        addMessage(currentChatUser, currentChatUser.responses[responseIndex]);
+                    }
+                }, 2000 + Math.random() * 2000);
+            }
+        }
+
+        // Handle Enter key in message input
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('MatchOptimizer loaded - Subscription trap active');
+            // Add meta tag for mobile compatibility
+            const meta = document.createElement('meta');
+            meta.name = 'apple-mobile-web-app-capable';
+            meta.content = 'yes';
+            document.head.appendChild(meta);
+        });
+    </script>
+</body>
+</html>
