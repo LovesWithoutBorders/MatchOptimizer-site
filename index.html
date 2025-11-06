@@ -46,15 +46,13 @@
         }
 
         .logo {
-            font-size: 34px; /* Further reduced to ensure full display */
+            font-size: 36px; /* Reduced from 42px to prevent cutoff */
             font-weight: bold;
             margin-bottom: 10px;
             background: linear-gradient(45deg, #ff6bcd, #667eea);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            padding: 0 5px; /* Reduced padding */
-            letter-spacing: -0.5px; /* Tighter letter spacing */
-            word-wrap: break-word; /* Ensure text wraps if needed */
+            padding: 0 10px; /* Added padding for safety */
         }
 
         .tagline {
@@ -167,24 +165,6 @@
             border: 1px solid #e6e6ff;
             border-radius: 15px;
             margin-bottom: 15px;
-        }
-
-        /* Media query for very small screens */
-        @media (max-width: 380px) {
-            .logo {
-                font-size: 32px; /* Even smaller for very small screens */
-                letter-spacing: -1px;
-            }
-            .container {
-                padding: 15px;
-            }
-        }
-
-        /* Media query for larger screens */
-        @media (min-width: 768px) {
-            .logo {
-                font-size: 40px; /* Larger for desktop */
-            }
         }
     </style>
 </head>
